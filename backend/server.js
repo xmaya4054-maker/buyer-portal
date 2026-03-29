@@ -36,14 +36,18 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000 // Timeout after 5 seconds instead of hanging
+  })
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error.message);
+    console.warn('The application is running but cannot connect to the database. Please check your IP Whitelist in MongoDB Atlas.');
   });
